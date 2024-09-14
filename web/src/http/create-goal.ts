@@ -5,7 +5,7 @@ interface CreateGoalRequest {
 
 
 export async function createGoal({ title, desiredWeeklyFrequency }: CreateGoalRequest) {
-  await fetch('http://localhost:3333/goals', {
+  const response = await fetch('http://localhost:3333/goals', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -15,4 +15,8 @@ export async function createGoal({ title, desiredWeeklyFrequency }: CreateGoalRe
       desiredWeeklyFrequency
     }),
   })
+
+  if (!response.ok) {
+    throw new Error('Erro ao criar a meta.')
+  }
 }

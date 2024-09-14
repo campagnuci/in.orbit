@@ -1,5 +1,5 @@
 export async function deleteGoalCompletion(goalId: string) {
-  await fetch('http://localhost:3333/completions', {
+  const response = await fetch('http://localhost:3333/completions', {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -8,4 +8,8 @@ export async function deleteGoalCompletion(goalId: string) {
       goalId,
     }),
   })
+
+  if (!response.ok) {
+    throw new Error('Erro ao remover o item.')
+  }
 }
