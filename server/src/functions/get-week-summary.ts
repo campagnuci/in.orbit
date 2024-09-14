@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 import utc from 'dayjs/plugin/utc'
-import { and, count, desc, eq, gte, lte, sql } from 'drizzle-orm'
+import { and, desc, eq, gte, lte, sql } from 'drizzle-orm'
 
 import { db } from "../db"
 import { goalCompletions, goals } from '../db/schema'
