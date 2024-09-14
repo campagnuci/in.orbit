@@ -22,8 +22,8 @@ app.register(fastifySwagger, {
     consumes: ['application/json'],
     produces: ['application/json'],
     info: {
-      title: 'plann.er',
-      description: 'Especificações da API para o back-end da aplicação plann.er construída durante o NLW Journey da Rocketseat.',
+      title: 'in.orbit',
+      description: 'Especificações da API para o back-end da aplicação in.orbit construída durante o NLW Pocket Javascript da Rocketseat.',
       version: '1.0.0'
     },
   },
