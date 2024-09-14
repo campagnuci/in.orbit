@@ -4,15 +4,21 @@ import { z } from 'zod'
 import { getWeekSummary } from '../../functions/get-week-summary'
 
 export const getWeekSummaryRoute: FastifyPluginAsyncZod = async (app) => {
-  app.get('/summary', {
-    schema: {
-      querystring: z.object({
-        timezoneOffset: z.coerce.number().default(0)
-      })
+  app.get(
+    '/summary',
+    {
+      schema: {
+        summary: 'Get Week Summary',
+        tags: ['summary'],
+        querystring: z.object({
+          timezoneOffset: z.coerce.number().default(0)
+        })
+      }
+    },
+    async (request) => {
+      const { timezoneOffset } = request.query
+      const { summary } = await getWeekSummary({ timezoneOffset })
+      return { summary }
     }
-  }, async (request) => {
-    const { timezoneOffset } = request.query
-    const { summary } = await getWeekSummary({ timezoneOffset })
-    return { summary }
-  })
+  )
 }
