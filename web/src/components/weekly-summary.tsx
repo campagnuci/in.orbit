@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import ptBR from 'dayjs/locale/pt-br'
-import { CheckCircle2, FlagOff, Plus } from 'lucide-react'
+import { CheckCircle2, CircleX, FlagOff, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
@@ -33,18 +33,26 @@ export function WeeklySummary() {
   const completedPercentage = Math.round((data?.completed * 100) / data?.total)
 
   async function handleDeleteGoalCompletion(goalId: string) {
-    console.log(goalId)
-    await deleteGoalCompletion(goalId)
+    try {
+      await deleteGoalCompletion(goalId)
 
-    queryClient.invalidateQueries({ queryKey: ['summary'] })
-    queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
+      queryClient.invalidateQueries({ queryKey: ['summary'] })
+      queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
 
-    toast.warning('Você removeu uma tarefa', {
-      description: 'A tarefa foi removida com sucesso. =(',
-      duration: 2500,
-      closeButton: true,
-      icon: <FlagOff />,
-    })
+      toast.warning('Você removeu uma tarefa', {
+        description: 'A tarefa foi removida com sucesso. =(',
+        duration: 2500,
+        closeButton: true,
+        icon: <FlagOff />,
+      })
+    } catch (error) {
+      toast.error('Erro ao criar meta', {
+        description: 'Oops. Encontramos algum problema, tente novamente mais tarde.',
+        duration: 2500,
+        closeButton: true,
+        icon: <CircleX />,
+      })
+    }
   }
 
   return (

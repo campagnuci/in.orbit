@@ -1,4 +1,4 @@
-import { Medal, Plus } from 'lucide-react'
+import { CircleX, Medal, Plus } from 'lucide-react'
 import { OutlineButton } from './ui/outline-button'
 import { getPendingGoals } from '@/http/get-pending-goals'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -18,16 +18,25 @@ export function PendingGoals() {
   }
 
   async function handleCompleteGoal(goalId: string) {
-    await createGoalCompletion(goalId)
-    queryClient.invalidateQueries({ queryKey: ['summary'] })
-    queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
+    try {
+      await createGoalCompletion(goalId)
+      queryClient.invalidateQueries({ queryKey: ['summary'] })
+      queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
 
-    toast.success('Você realizou uma das metas!', {
-      description: 'Parabéns, continue assim!',
-      duration: 2500,
-      closeButton: true,
-      icon: <Medal />,
-    })
+      toast.success('Você realizou uma das metas!', {
+        description: 'Parabéns, continue assim!',
+        duration: 2500,
+        closeButton: true,
+        icon: <Medal />,
+      })
+    } catch (error) {
+      toast.error('Erro ao criar meta', {
+        description: 'Oops. Encontramos algum problema, tente novamente mais tarde.',
+        duration: 2500,
+        closeButton: true,
+        icon: <CircleX />,
+      })
+    }
   }
 
   return (

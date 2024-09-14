@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { X, Medal } from 'lucide-react'
+import { X, Medal, CircleX } from 'lucide-react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -30,23 +30,32 @@ export function CreateGoal({ closeDialog }: CreateGoalProps) {
   })
 
   async function handleCreateGoal(data: CreateGoalForm) {
-    await createGoal({
-      title: data.title,
-      desiredWeeklyFrequency: data.desiredWeeklyFrequency,
-    })
+    try {
+      await createGoal({
+        title: data.title,
+        desiredWeeklyFrequency: data.desiredWeeklyFrequency,
+      })
 
-    queryClient.invalidateQueries({ queryKey: ['summary'] })
-    queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
+      queryClient.invalidateQueries({ queryKey: ['summary'] })
+      queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
 
-    reset()
-    closeDialog()
+      reset()
+      closeDialog()
 
-    toast.success('Meta cadastrada com sucesso', {
-      description: `Meta "${data.title}" para ser completada ${data.desiredWeeklyFrequency}x por semana!`,
-      duration: 2500,
-      closeButton: true,
-      icon: <Medal />,
-    })
+      toast.success('Meta cadastrada com sucesso', {
+        description: `Meta "${data.title}" para ser completada ${data.desiredWeeklyFrequency}x por semana!`,
+        duration: 2500,
+        closeButton: true,
+        icon: <Medal />,
+      })
+    } catch (error) {
+      toast.error('Erro ao criar meta', {
+        description: 'Oops. Encontramos algum problema, tente novamente mais tarde.',
+        duration: 2500,
+        closeButton: true,
+        icon: <CircleX />,
+      })
+    }
   }
 
   return (
