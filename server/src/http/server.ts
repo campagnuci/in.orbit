@@ -9,6 +9,7 @@ import { createGoalRoute } from './routes/create-goal'
 import { createGoalCompletionRoute } from './routes/create-goal-completion'
 import { getWeekPendingGoalsRoute } from './routes/get-week-pending-goals'
 import { getWeekSummaryRoute } from './routes/get-week-summary'
+import { deleteGoalCompletionRoute } from './routes/delete-goal-completion'
 
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
@@ -39,6 +40,7 @@ app.setSerializerCompiler(serializerCompiler)
 
 app.register(createGoalRoute)
 app.register(createGoalCompletionRoute)
+app.register(deleteGoalCompletionRoute)
 app.register(getWeekPendingGoalsRoute)
 app.register(getWeekSummaryRoute)
 

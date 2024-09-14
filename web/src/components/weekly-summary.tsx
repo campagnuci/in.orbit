@@ -1,5 +1,5 @@
 import { CheckCircle2, Plus } from 'lucide-react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import ptBR from 'dayjs/locale/pt-br'
 
@@ -12,8 +12,10 @@ import { Progress, ProgressIndicator } from '@/components/ui/progress-bar'
 import { Separator } from '@/components/ui/separator'
 import { PendingGoals } from '@/components/pending-goals'
 import { getWeeklySummary } from '@/http/get-summary'
+import { deleteGoalCompletion } from '@/http/delete-goal-completion'
 
 export function WeeklySummary() {
+  const queryClient = useQueryClient()
   const { data } = useQuery({
     queryKey: ['summary'],
     queryFn: getWeeklySummary,
@@ -28,6 +30,14 @@ export function WeeklySummary() {
   const lastDayOfWeek = dayjs().endOf('week').format("DD MMM")
 
   const completedPercentage = Math.round((data?.completed * 100) / data?.total)
+
+  async function handleDeleteGoalCompletion (goalId: string) {
+    console.log(goalId)
+    await deleteGoalCompletion(goalId)
+
+    queryClient.invalidateQueries({ queryKey: ['summary'] })
+    queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
+  }
 
   return (
     <div className="py-10 max-w-[480px] px-5 mx-auto flex flex-col gap-6">
@@ -83,7 +93,13 @@ export function WeeklySummary() {
                       <span className="text-sm text-zinc-400">
                         Você completou "
                         <span className="text-zinc-100">{goal.title}</span>" às{' '}
-                        <span className="text-zinc-100">{time}h</span>
+                        <span className="text-zinc-100">{time}h</span>.
+                      </span>
+                      <span
+                        onClick={() => handleDeleteGoalCompletion(goal.id)}
+                        className='text-xs text-zinc-500 cursor-pointer'
+                      >
+                        Desfazer
                       </span>
                     </li>
                   )
