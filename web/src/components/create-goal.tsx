@@ -1,14 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { X } from 'lucide-react'
+import { X, Medal } from 'lucide-react'
 import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { DialogContent, DialogTitle, DialogClose, DialogDescription } from '@/components/ui/dialog'
-import { RadioGroup, RadioGroupItem, RadioGroupIndicator } from '@/components/ui/radio-group'
 import { Button } from '@/components/ui/button'
+import { DialogContent, DialogTitle, DialogClose, DialogDescription } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem, RadioGroupIndicator } from '@/components/ui/radio-group'
 import { createGoal } from '@/http/create-goal'
 
 const createGoalForm = z.object({
@@ -18,7 +19,11 @@ const createGoalForm = z.object({
 
 type CreateGoalForm = z.infer<typeof createGoalForm>
 
-export function CreateGoal() {
+interface CreateGoalProps {
+  closeDialog: () => void
+}
+
+export function CreateGoal({ closeDialog }: CreateGoalProps) {
   const queryClient = useQueryClient()
   const { register, control, handleSubmit, formState, reset } = useForm<CreateGoalForm>({
     resolver: zodResolver(createGoalForm)
@@ -34,6 +39,14 @@ export function CreateGoal() {
     queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
 
     reset()
+    closeDialog()
+
+    toast.success('Meta cadastrada com sucesso', {
+      description: `Meta "${data.title}" para ser completada ${data.desiredWeeklyFrequency}x por semana!`,
+      duration: 2500,
+      closeButton: true,
+      icon: <Medal />,
+    })
   }
 
   return (

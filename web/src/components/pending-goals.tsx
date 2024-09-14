@@ -1,8 +1,9 @@
-import { Plus } from "lucide-react";
-import { OutlineButton } from "./ui/outline-button";
-import { getPendingGoals } from "@/http/get-pending-goals";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createGoalCompletion } from "@/http/create-goal-completion";
+import { Medal, Plus } from 'lucide-react'
+import { OutlineButton } from './ui/outline-button'
+import { getPendingGoals } from '@/http/get-pending-goals'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { createGoalCompletion } from '@/http/create-goal-completion'
+import { toast } from 'sonner'
 
 export function PendingGoals() {
   const queryClient = useQueryClient()
@@ -20,10 +21,17 @@ export function PendingGoals() {
     await createGoalCompletion(goalId)
     queryClient.invalidateQueries({ queryKey: ['summary'] })
     queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
+
+    toast.success('Você realizou uma das metas!', {
+      description: 'Parabéns, continue assim!',
+      duration: 2500,
+      closeButton: true,
+      icon: <Medal />,
+    })
   }
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className='flex flex-wrap gap-3'>
       {data.map((goal) => {
         return (
           <OutlineButton
@@ -31,7 +39,7 @@ export function PendingGoals() {
             onClick={() => handleCompleteGoal(goal.id)}
             disabled={goal.completionCount >= goal.desiredWeeklyFrequency}
           >
-            <Plus className="size-4 text-zinc-600" />
+            <Plus className='size-4 text-zinc-600' />
             {goal.title}
           </OutlineButton>
         )

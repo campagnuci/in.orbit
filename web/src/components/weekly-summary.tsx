@@ -1,7 +1,8 @@
-import { CheckCircle2, Plus } from 'lucide-react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import ptBR from 'dayjs/locale/pt-br'
+import { CheckCircle2, FlagOff, Plus } from 'lucide-react'
+import { toast } from 'sonner'
 
 dayjs.locale(ptBR)
 
@@ -37,6 +38,13 @@ export function WeeklySummary() {
 
     queryClient.invalidateQueries({ queryKey: ['summary'] })
     queryClient.invalidateQueries({ queryKey: ['pending-goals'] })
+
+    toast.warning('Você removeu uma tarefa', {
+      description: 'A tarefa foi removida com sucesso. =(',
+      duration: 2500,
+      closeButton: true,
+      icon: <FlagOff />,
+    })
   }
 
   return (
