@@ -9,11 +9,13 @@ const button = tv({
       primary:
         'bg-violet-500 text-violet-50 hover:bg-violet-600 ring-violet-500',
       secondary: 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800 ring-zinc-900',
+      link: 'text-xs text-zinc-500 underline focus:outline-none m-0'
     },
 
     size: {
       default: 'px-4 py-2.5',
       sm: 'px-3 py-1.5',
+      none: 'px-0 py-0',
     },
   },
 

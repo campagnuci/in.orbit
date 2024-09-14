@@ -4,16 +4,16 @@ import ptBR from 'dayjs/locale/pt-br'
 import { CheckCircle2, FlagOff, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 
-dayjs.locale(ptBR)
-
 import { Button } from '@/components/ui/button'
 import { DialogTrigger } from '@/components/ui/dialog'
-import { InOrbitIcon } from '@/components/in-orbit-icon'
 import { Progress, ProgressIndicator } from '@/components/ui/progress-bar'
 import { Separator } from '@/components/ui/separator'
+import { InOrbitIcon } from '@/components/in-orbit-icon'
 import { PendingGoals } from '@/components/pending-goals'
-import { getWeeklySummary } from '@/http/get-summary'
 import { deleteGoalCompletion } from '@/http/delete-goal-completion'
+import { getWeeklySummary } from '@/http/get-summary'
+
+dayjs.locale(ptBR)
 
 export function WeeklySummary() {
   const queryClient = useQueryClient()
@@ -32,7 +32,7 @@ export function WeeklySummary() {
 
   const completedPercentage = Math.round((data?.completed * 100) / data?.total)
 
-  async function handleDeleteGoalCompletion (goalId: string) {
+  async function handleDeleteGoalCompletion(goalId: string) {
     console.log(goalId)
     await deleteGoalCompletion(goalId)
 
@@ -103,12 +103,13 @@ export function WeeklySummary() {
                         <span className="text-zinc-100">{goal.title}</span>" às{' '}
                         <span className="text-zinc-100">{time}h</span>.
                       </span>
-                      <span
+                      <Button
+                        variant='link'
+                        size='none'
                         onClick={() => handleDeleteGoalCompletion(goal.id)}
-                        className='text-xs text-zinc-500 cursor-pointer'
                       >
                         Desfazer
-                      </span>
+                      </Button>
                     </li>
                   )
                 })}
