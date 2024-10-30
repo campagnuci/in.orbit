@@ -8,10 +8,11 @@ import { goalCompletions, goals } from '../db/schema'
 dayjs.extend(utc)
 
 interface GetWeekSummaryParams {
+  userId: string
   timezoneOffset: number
 }
 
-export async function getWeekSummary({ timezoneOffset }: GetWeekSummaryParams) {
+export async function getWeekSummary({ userId, timezoneOffset }: GetWeekSummaryParams) {
   const timezoneOffsetInHours = timezoneOffset / 60
   const firstDayOfWeek = dayjs().startOf('week').toDate()
   const lastDayOfWeek = dayjs().endOf('week').toDate()
@@ -25,7 +26,10 @@ export async function getWeekSummary({ timezoneOffset }: GetWeekSummaryParams) {
         createdAt: goals.createdAt,
       })
       .from(goals)
-      .where(lte(goals.createdAt, lastDayOfWeek))
+      .where(and(
+        lte(goals.createdAt, lastDayOfWeek),
+        eq(goals.userId, userId)
+      ))
   )
 
   const goalsCompletedInWeek = db.$with('goals_completed_in_week').as(
@@ -43,7 +47,8 @@ export async function getWeekSummary({ timezoneOffset }: GetWeekSummaryParams) {
       .where(
         and(
           gte(goalCompletions.createdAt, firstDayOfWeek),
-          lte(goalCompletions.createdAt, lastDayOfWeek)
+          lte(goalCompletions.createdAt, lastDayOfWeek),
+          eq(goals.userId, userId)
         )
       )
       .orderBy(desc(goalCompletions.createdAt))

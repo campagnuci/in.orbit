@@ -10,12 +10,18 @@ import { createGoalCompletionRoute } from './routes/create-goal-completion'
 import { getWeekPendingGoalsRoute } from './routes/get-week-pending-goals'
 import { getWeekSummaryRoute } from './routes/get-week-summary'
 import { deleteGoalCompletionRoute } from './routes/delete-goal-completion'
-
+import { authenticateUserFromGithubRoute } from './routes/authenticate-from-github'
+import fastifyJwt from '@fastify/jwt'
+import { getProfileRoute } from './routes/get-profile'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.register(fastifyCors, {
   origin: '*',
+})
+
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
 })
 
 app.register(fastifySwagger, {
@@ -43,6 +49,8 @@ app.register(createGoalCompletionRoute)
 app.register(deleteGoalCompletionRoute)
 app.register(getWeekPendingGoalsRoute)
 app.register(getWeekSummaryRoute)
+app.register(authenticateUserFromGithubRoute)
+app.register(getProfileRoute)
 
 app
   .listen({

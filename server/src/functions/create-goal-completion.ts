@@ -9,9 +9,10 @@ dayjs.extend(weekOfYear)
 
 interface CreateGoalCompletionRequest {
   goalId: string
+  userId: string
 }
 
-export async function createGoalCompletion({ goalId }: CreateGoalCompletionRequest) {
+export async function createGoalCompletion({ goalId, userId }: CreateGoalCompletionRequest) {
   const currentYear = dayjs().year()
   const currentWeek = dayjs().week()
 
@@ -22,9 +23,11 @@ export async function createGoalCompletion({ goalId }: CreateGoalCompletionReque
         completionCount: count(goalCompletions.id).as('completionCount'),
       })
       .from(goalCompletions)
+      .innerJoin(goals, eq(goals.id, goalCompletions.goalId))
       .where(
         and(
           eq(goalCompletions.goalId, goalId),
+          eq(goals.userId, userId),
           sql`EXTRACT(YEAR FROM ${goalCompletions.createdAt}) = ${currentYear}`,
           sql`EXTRACT(WEEK FROM ${goalCompletions.createdAt}) = ${currentWeek}`
         )
@@ -40,7 +43,10 @@ export async function createGoalCompletion({ goalId }: CreateGoalCompletionReque
     })
     .from(goals)
     .leftJoin(goalCompletionCounts, eq(goals.id, goalCompletionCounts.goalId))
-    .where(eq(goals.id, goalId))
+    .where(and(
+      eq(goals.id, goalId),
+      eq(goals.userId, userId)
+    ))
     .limit(1)
 
   const { isIncomplete } = result[0]
