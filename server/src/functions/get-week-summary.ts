@@ -10,12 +10,13 @@ dayjs.extend(utc)
 interface GetWeekSummaryParams {
   userId: string
   timezoneOffset: number
+  weekStartsAt: Date
 }
 
-export async function getWeekSummary({ userId, timezoneOffset }: GetWeekSummaryParams) {
+export async function getWeekSummary({ userId, timezoneOffset, weekStartsAt }: GetWeekSummaryParams) {
   const timezoneOffsetInHours = timezoneOffset / 60
-  const firstDayOfWeek = dayjs().startOf('week').toDate()
-  const lastDayOfWeek = dayjs().endOf('week').toDate()
+  const firstDayOfWeek = weekStartsAt
+  const lastDayOfWeek = dayjs(weekStartsAt).endOf('week').toDate()
 
   const goalsCreatedUpToWeek = db.$with('goals_created_up_to_week').as(
     db
